@@ -182,6 +182,12 @@ class ScanNetData(object):
             info['point_cloud'] = pc_info
             pts_filename = osp.join(self.root_dir, 'scannet_instance_data',
                                     f'{sample_idx}_vert.npy')
+            
+            # TODO: 等不起了，增加如果点云数据文件不存在，就跳过。
+            if not os.path.exists(pts_filename):
+                print(f'Exist. File is not exist: {pts_filename}')
+                return;
+            
             points = np.load(pts_filename)
             mmengine.mkdir_or_exist(osp.join(self.save_path, 'points'))
             points.tofile(
