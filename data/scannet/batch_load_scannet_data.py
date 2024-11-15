@@ -114,14 +114,13 @@ def batch_export(max_num_point,  # 定义批量导出的函数
 
     scan_names = [line.rstrip() for line in open(scan_names_file)]  # 读取扫描名称文件并去除换行符
     for scan_name in scan_names:  # 遍历每个扫描名称
-        print('-' * 20 + 'begin')  # 打印开始标志
-        print(datetime.datetime.now())  # 打印当前时间
-        print('-------------------- OK --------------------')
+        # print('-' * 20 + 'begin')  # 打印开始标志
+        # print(datetime.datetime.now())  # 打印当前时间
         print(scan_name)  # 打印当前扫描名称
         output_filename_prefix = osp.join(output_folder, scan_name)  # 生成输出文件名前缀
         if osp.isfile(f'{output_filename_prefix}_vert.npy'):  # 如果输出文件已存在
             print('File already exists. skipping.')  # 打印跳过信息
-            print('-' * 20 + 'done')  # 打印完成标志
+            # print('-' * 20 + 'done')  # 打印完成标志
             continue  # 跳过当前扫描名称
         try:
             export_one_scan( # 调用导出单个扫描函数
