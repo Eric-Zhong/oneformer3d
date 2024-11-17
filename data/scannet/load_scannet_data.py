@@ -158,8 +158,9 @@ def main():
         '--scan_path',
         required=True,
         help='path to scannet scene (e.g., data/ScanNet/v2/scene0000_00')  # 添加扫描路径参数
-    )
+
     parser.add_argument('--output_file', required=True, help='output file')  # 添加输出文件参数
+
     parser.add_argument(
         '--label_map_file',
         required=True,

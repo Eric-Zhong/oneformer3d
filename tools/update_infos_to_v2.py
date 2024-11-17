@@ -188,8 +188,7 @@ def clear_data_info_unused_keys(data_info):
 def update_scannet_infos(pkl_path, out_dir):
     print(f'{pkl_path} will be modified.')
     if out_dir in pkl_path:
-        print(f'Warning, you may overwriting '
-              f'the original data {pkl_path}.')
+        print(f'Warning, you may overwriting ' f'the original data {pkl_path}.')
         time.sleep(5)
     METAINFO = {
         'classes':
@@ -201,21 +200,26 @@ def update_scannet_infos(pkl_path, out_dir):
     data_list = mmengine.load(pkl_path)
     print('Start updating:')
     converted_list = []
+    
+    ignore_class_name = None
+
     for ori_info_dict in mmengine.track_iter_progress(data_list):
+        
+        # TODO: xuzhong 为了先能让没下载完的数据集能运行起来
+        if ori_info_dict == None:
+            continue
+
         temp_data_info = get_empty_standard_data_info()
-        temp_data_info['lidar_points']['num_pts_feats'] = ori_info_dict[
-            'point_cloud']['num_features']
-        temp_data_info['lidar_points']['lidar_path'] = Path(
-            ori_info_dict['pts_path']).name
+
+        temp_data_info['lidar_points']['num_pts_feats'] = ori_info_dict['point_cloud']['num_features']
+        temp_data_info['lidar_points']['lidar_path']    = Path(ori_info_dict['pts_path']).name
+
         if 'pts_semantic_mask_path' in ori_info_dict:
-            temp_data_info['pts_semantic_mask_path'] = Path(
-                ori_info_dict['pts_semantic_mask_path']).name
+            temp_data_info['pts_semantic_mask_path']    = Path(ori_info_dict['pts_semantic_mask_path']).name
         if 'pts_instance_mask_path' in ori_info_dict:
-            temp_data_info['pts_instance_mask_path'] = Path(
-                ori_info_dict['pts_instance_mask_path']).name
+            temp_data_info['pts_instance_mask_path']    = Path(ori_info_dict['pts_instance_mask_path']).name
         if 'super_pts_path' in ori_info_dict:
-            temp_data_info['super_pts_path'] = Path(
-                ori_info_dict['super_pts_path']).name
+            temp_data_info['super_pts_path']            = Path(ori_info_dict['super_pts_path']).name
 
         # TODO support camera
         # np.linalg.inv(info['axis_align_matrix'] @ extrinsic): depth2cam
@@ -246,9 +250,15 @@ def update_scannet_infos(pkl_path, out_dir):
             temp_data_info['instances'] = instance_list
         temp_data_info, _ = clear_data_info_unused_keys(temp_data_info)
         converted_list.append(temp_data_info)
+
     pkl_name = Path(pkl_path).name
     out_path = osp.join(out_dir, pkl_name)
     print(f'Writing to output file: {out_path}.')
+    
+    # TODO: 为了先能跑起来
+    if ignore_class_name == None:
+        return;
+    
     print(f'ignore classes: {ignore_class_name}')
 
     # dataset metainfo
